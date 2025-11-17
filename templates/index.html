@@ -1,0 +1,812 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Play Store Analytics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 10px;
+            font-size: 2.8em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .search-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            position: relative;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 100px;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            margin-top: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .suggestion-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+        
+        .suggestion-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .suggestion-name {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .suggestion-category {
+            font-size: 12px;
+            color: #666;
+            margin-top: 3px;
+        }
+        
+        button {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .error {
+            background: #ff4444;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .results {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .app-header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        
+        .app-title {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: normal;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-value {
+            font-size: 26px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .insights-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .insight-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .insight-title {
+            font-size: 1.3em;
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .strength-item, .weakness-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        
+        .strength-item {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        
+        .weakness-item {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .strength-item:hover, .weakness-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .metric-name {
+            font-weight: bold;
+            font-size: 15px;
+        }
+        
+        .metric-detail {
+            font-size: 13px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .sentiment-bars {
+            margin-top: 15px;
+        }
+        
+        .sentiment-bar {
+            margin-bottom: 12px;
+        }
+        
+        .sentiment-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .sentiment-progress {
+            height: 25px;
+            background: #f0f0f0;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .sentiment-fill {
+            height: 100%;
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .sentiment-positive { background: linear-gradient(90deg, #28a745, #20c997); }
+        .sentiment-negative { background: linear-gradient(90deg, #dc3545, #e74c3c); }
+        .sentiment-neutral { background: linear-gradient(90deg, #ffc107, #ff9800); }
+        
+        .category-info {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        
+        .category-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .category-stat {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .category-stat-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .category-stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .similar-apps-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+            transition: background 0.2s;
+        }
+        
+        td {
+            font-size: 14px;
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .chart-container img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: #667eea;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Google Play Store Analytics</h1>
+        <p class="subtitle">Analyze and compare Android apps with detailed insights</p>
+        
+        <div class="search-box">
+            <div class="input-group">
+                <input type="text" id="appName" placeholder="Search for apps (e.g., Instagram, WhatsApp, Spotify)" autocomplete="off" />
+                <button id="analyzeBtn" onclick="analyzeApp()">Analyze</button>
+                <div class="suggestions" id="suggestions"></div>
+            </div>
+        </div>
+        
+        <div class="error" id="errorMsg"></div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p class="loading-text">Analyzing app data...</p>
+        </div>
+        
+        <div class="results" id="results">
+            <!-- App Header -->
+            <div class="app-header">
+                <div class="app-title" id="appTitle"></div>
+                <div class="stats-grid" id="appStats"></div>
+            </div>
+            
+            <!-- Category Insights -->
+            <div class="category-info" id="categoryInfo"></div>
+            
+            <!-- Insights Grid -->
+            <div class="insights-container">
+                <!-- Strengths & Weaknesses -->
+                <div class="insight-card">
+                    <div class="insight-title">✅ Strengths</div>
+                    <div id="strengthsList"></div>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title">⚠️ Areas for Improvement</div>
+                    <div id="weaknessesList"></div>
+                </div>
+                
+                <!-- Sentiment Analysis -->
+                <div class="insight-card" id="sentimentCard" style="display: none;">
+                    <div class="insight-title">😊 User Sentiment</div>
+                    <div id="sentimentAnalysis"></div>
+                </div>
+            </div>
+            
+            <!-- Similar Apps Table -->
+            <div class="similar-apps-section">
+                <div class="section-title">📊 Similar Apps in Category</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>App Name</th>
+                            <th>Rating</th>
+                            <th>Installs</th>
+                            <th>Reviews</th>
+                        </tr>
+                    </thead>
+                    <tbody id="similarAppsTable"></tbody>
+                </table>
+            </div>
+            
+            <!-- Chart -->
+            <div class="chart-container">
+                <div class="section-title">📈 Visual Comparison</div>
+                <img id="chartImage" src="" alt="Comparison Chart" />
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let searchTimeout;
+        
+        // Search suggestions
+        document.getElementById('appName').addEventListener('input', function(e) {
+            const query = e.target.value.trim();
+            
+            clearTimeout(searchTimeout);
+            
+            if (query.length < 2) {
+                document.getElementById('suggestions').style.display = 'none';
+                return;
+            }
+            
+            searchTimeout = setTimeout(() => {
+                fetch(`/search?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const suggestions = document.getElementById('suggestions');
+                        
+                        if (data.apps.length === 0) {
+                            suggestions.style.display = 'none';
+                            return;
+                        }
+                        
+                        suggestions.innerHTML = data.apps.map(app => `
+                            <div class="suggestion-item" onclick="selectApp('${app.name.replace(/'/g, "\\'")}')">
+                                <div class="suggestion-name">${app.name}</div>
+                                <div class="suggestion-category">${app.category}</div>
+                            </div>
+                        `).join('');
+                        
+                        suggestions.style.display = 'block';
+                    });
+            }, 300);
+        });
+        
+        function selectApp(appName) {
+            document.getElementById('appName').value = appName;
+            document.getElementById('suggestions').style.display = 'none';
+            analyzeApp();
+        }
+        
+        // Close suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.input-group')) {
+                document.getElementById('suggestions').style.display = 'none';
+            }
+        });
+        
+        // Allow Enter key to trigger analysis
+        document.getElementById('appName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('suggestions').style.display = 'none';
+                analyzeApp();
+            }
+        });
+
+        function analyzeApp() {
+            const appName = document.getElementById('appName').value.trim();
+            
+            document.getElementById('errorMsg').style.display = 'none';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('suggestions').style.display = 'none';
+            
+            if (!appName) {
+                showError('Please enter an app name');
+                return;
+            }
+            
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('analyzeBtn').disabled = true;
+            
+            fetch('/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ app_name: appName })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => Promise.reject(err));
+                }
+                return response.json();
+            })
+            .then(data => {
+                displayResults(data);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('analyzeBtn').disabled = false;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError(error.error || 'An error occurred while analyzing the app');
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('analyzeBtn').disabled = false;
+            });
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMsg');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        function displayResults(data) {
+            // App Title
+            document.getElementById('appTitle').innerHTML = `
+                <span>${data.target.App}</span>
+                <span class="badge">${data.target.Category}</span>
+            `;
+            
+            // App Stats
+            const statsHtml = `
+                <div class="stat-card">
+                    <div class="stat-label">⭐ Rating</div>
+                    <div class="stat-value">${data.target.Rating ? data.target.Rating.toFixed(2) : 'N/A'}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">📥 Installs</div>
+                    <div class="stat-value">${data.target.Installs ? formatNumber(data.target.Installs) : 'N/A'}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">💬 Reviews</div>
+                    <div class="stat-value">${data.target.Reviews ? formatNumber(data.target.Reviews) : 'N/A'}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">💰 Price</div>
+                    <div class="stat-value">${data.target.Price > 0 ? '$' + data.target.Price.toFixed(2) : 'Free'}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">📦 Size</div>
+                    <div class="stat-value">${data.target.Size}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">👥 Content Rating</div>
+                    <div class="stat-value">${data.target.Content_Rating}</div>
+                </div>
+            `;
+            document.getElementById('appStats').innerHTML = statsHtml;
+            
+            // Category Insights
+            if (data.category_insights) {
+                const ci = data.category_insights;
+                document.getElementById('categoryInfo').innerHTML = `
+                    <div class="insight-title">📂 ${data.target.Category} Category Overview</div>
+                    <div class="category-stats">
+                        <div class="category-stat">
+                            <div class="category-stat-value">${ci.total_apps}</div>
+                            <div class="category-stat-label">Total Apps</div>
+                        </div>
+                        <div class="category-stat">
+                            <div class="category-stat-value">${ci.avg_rating.toFixed(2)}</div>
+                            <div class="category-stat-label">Avg Rating</div>
+                        </div>
+                        <div class="category-stat">
+                            <div class="category-stat-value">${formatNumber(ci.avg_installs)}</div>
+                            <div class="category-stat-label">Avg Installs</div>
+                        </div>
+                        <div class="category-stat">
+                            <div class="category-stat-value">${ci.free_apps_percent.toFixed(0)}%</div>
+                            <div class="category-stat-label">Free Apps</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; color: #666; font-size: 14px;">
+                        <strong>Top Rated:</strong> ${ci.top_rated_app || 'N/A'} | 
+                        <strong>Most Installed:</strong> ${ci.most_installed_app || 'N/A'}
+                    </p>
+                `;
+            }
+            
+            // Strengths
+            const strengthsHtml = data.strengths.length > 0 
+                ? data.strengths.map(s => `
+                    <div class="strength-item">
+                        <div class="metric-name">${s.metric}</div>
+                        <div class="metric-detail">
+                            ${formatNumber(s.value)} vs Category Avg: ${formatNumber(s.avg)} 
+                            (${s.diff_percent > 0 ? '+' : ''}${s.diff_percent.toFixed(1)}%)
+                        </div>
+                    </div>
+                `).join('') 
+                : '<div class="no-data">No standout strengths identified</div>';
+            document.getElementById('strengthsList').innerHTML = strengthsHtml;
+            
+            // Weaknesses
+            const weaknessesHtml = data.weaknesses.length > 0 
+                ? data.weaknesses.map(w => `
+                    <div class="weakness-item">
+                        <div class="metric-name">${w.metric}</div>
+                        <div class="metric-detail">
+                            ${formatNumber(w.value)} vs Category Avg: ${formatNumber(w.avg)} 
+                            (${w.diff_percent.toFixed(1)}%)
+                        </div>
+                    </div>
+                `).join('') 
+                : '<div class="no-data">Performing well across all metrics!</div>';
+            document.getElementById('weaknessesList').innerHTML = weaknessesHtml;
+            
+            // Sentiment Analysis
+            if (data.sentiment) {
+                const sent = data.sentiment;
+                document.getElementById('sentimentCard').style.display = 'block';
+                document.getElementById('sentimentAnalysis').innerHTML = `
+                    <p style="margin-bottom: 15px; color: #666;">Based on ${sent.total_reviews} user reviews</p>
+                    <div class="sentiment-bars">
+                        <div class="sentiment-bar">
+                            <div class="sentiment-label">
+                                <span>Positive</span>
+                                <span>${sent.percentages.Positive.toFixed(1)}%</span>
+                            </div>
+                            <div class="sentiment-progress">
+                                <div class="sentiment-fill sentiment-positive" style="width: ${sent.percentages.Positive}%">
+                                    ${sent.counts.Positive}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sentiment-bar">
+                            <div class="sentiment-label">
+                                <span>Neutral</span>
+                                <span>${sent.percentages.Neutral.toFixed(1)}%</span>
+                            </div>
+                            <div class="sentiment-progress">
+                                <div class="sentiment-fill sentiment-neutral" style="width: ${sent.percentages.Neutral}%">
+                                    ${sent.counts.Neutral}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sentiment-bar">
+                            <div class="sentiment-label">
+                                <span>Negative</span>
+                                <span>${sent.percentages.Negative.toFixed(1)}%</span>
+                            </div>
+                            <div class="sentiment-progress">
+                                <div class="sentiment-fill sentiment-negative" style="width: ${sent.percentages.Negative}%">
+                                    ${sent.counts.Negative}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('sentimentCard').style.display = 'none';
+            }
+            
+            // Similar Apps Table
+            const tableBody = document.getElementById('similarAppsTable');
+            tableBody.innerHTML = data.similar_apps.map((app, index) => `
+                <tr>
+                    <td><strong>#${index + 1}</strong></td>
+                    <td>${app.App}</td>
+                    <td>${app.Rating ? app.Rating.toFixed(2) : 'N/A'}</td>
+                    <td>${app.Installs ? formatNumber(app.Installs) : 'N/A'}</td>
+                    <td>${app.Reviews ? formatNumber(app.Reviews) : 'N/A'}</td>
+                </tr>
+            `).join('');
+            
+            // Chart
+            document.getElementById('chartImage').src = 'data:image/png;base64,' + data.chart;
+            
+            // Show results
+            document.getElementById('results').style.display = 'block';
+            
+            // Smooth scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        function formatNumber(num) {
+            if (num >= 1000000000) {
+                return (num / 1000000000).toFixed(1) + 'B';
+            }
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            }
+            if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toLocaleString();
+        }
+    </script>
+</body>
+</html>
+
