@@ -158,6 +158,74 @@
             display: none;
             animation: fadeIn 0.5s ease;
         }
+
+        .results{
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            height: auto;
+        }
+
+        .results > * {
+            width: 100%;
+        }
+
+/* ===== FIXED RESULTS GRID ===== */
+.results-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+}
+
+/* Desktop: 3-column layout for specific rows */
+@media (min-width: 1024px) {
+    /* Row 1: Success Score | Areas for Improvement | User Sentiment */
+    .results-row-1 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+        align-items: start; /* Prevent height stretching */
+    }
+
+    /* Row 2: Overall User Sentiment (Full Width) */
+    .overall-sentiment-container {
+        grid-column: 1 / -1; /* Span all columns */
+        width: 100%;
+    }
+
+    /* Row 3: Strengths | Positioning | Price | Content Rating */
+    .results-row-3 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        align-items: start;
+    }
+}
+
+/* Tablet */
+@media (max-width: 1023px) and (min-width: 768px) {
+    .results-row-1,
+    .results-row-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+    .results-row-1,
+    .results-row-3 {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+/* ===== END FIXED RESULTS GRID ===== */
+```
+
         
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -447,6 +515,521 @@
             color: #999;
             font-style: italic;
         }
+
+         /* ===== SUCCESS SCORE STYLES ===== */.success-score-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    padding: 30px;
+    margin: 30px 0;
+    color: white;
+    text-align: center;
+}
+
+.score-circle {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.score-svg {
+    width: 100%;
+    height: 100%;
+    /* REMOVED: transform: rotate(-90deg); */
+}
+
+.score-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.2);
+    stroke-width: 8;
+}
+
+/* NEW: Rotated progress group instead of entire SVG */
+.score-progress-group {
+    transform: rotate(-90deg);
+    transform-origin: 100px 100px;
+}
+
+.score-progress {
+    fill: none;
+    stroke: white;
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 565;
+    stroke-dashoffset: 565;
+    transition: stroke-dashoffset 1.5s ease-out;
+}
+
+.score-text {
+    font-size: 48px;
+    font-weight: bold;
+    fill: white;
+    text-anchor: middle;
+    dominant-baseline: middle;
+}
+
+.score-label {
+    font-size: 14px;
+    fill: rgba(255, 255, 255, 0.8);
+    text-anchor: middle;
+    dominant-baseline: middle;
+}
+
+.insights-box {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.tier-badge {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.description {
+    font-size: 16px;
+    margin: 10px 0;
+    line-height: 1.6;
+}
+
+.recommendation {
+    font-size: 14px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    font-style: italic;
+}
+
+/* Color variations for different score tiers */
+.insights-box.score-excellent {
+    border-left: 4px solid #2ecc71;
+}
+
+.insights-box.score-strong {
+    border-left: 4px solid #3498db;
+}
+
+.insights-box.score-good {
+    border-left: 4px solid #f39c12;
+}
+
+.insights-box.score-moderate {
+    border-left: 4px solid #e67e22;
+}
+
+.insights-box.score-poor {
+    border-left: 4px solid #e74c3c;
+}
+
+    /* ===== END SUCCESS SCORE STYLES ===== */
+
+        /* ===== COMPETITIVE POSITIONING STYLES ===== */
+.positioning-container {
+    margin: 30px 0;
+    padding: 30px;
+    background: #f8f9fa;
+    border-radius: 15px;
+}
+
+.positioning-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: center;
+}
+
+.chart-container {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.chart-container img {
+    width: 100%;
+    height: auto;
+}
+
+.positioning-insights {
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+}
+
+.position-badge {
+    font-size: 28px;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 15px;
+}
+
+.position-description {
+    font-size: 16px;
+    color: #333;
+    margin: 10px 0;
+    line-height: 1.6;
+}
+
+.position-recommendation {
+    font-size: 14px;
+    color: #666;
+    margin: 10px 0;
+    line-height: 1.6;
+}
+
+.quadrant-summary {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.quadrant-summary h4 {
+    margin: 0 0 15px 0;
+    color: #333;
+    font-size: 14px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .positioning-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* ===== END POSITIONING STYLES ===== */
+
+        /* ===== PRICE STRATEGY STYLES ===== */
+.price-strategy-container {
+    margin: 30px 0;
+    padding: 30px;
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    border-radius: 15px;
+    color: white;
+}
+
+.price-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: start;
+    margin-top: 20px;
+}
+
+.price-insights {
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.price-status {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.price-description {
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 10px 0;
+}
+
+.price-recommendation {
+    font-size: 14px;
+    margin: 15px 0;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.15);
+    border-left: 4px solid white;
+    border-radius: 5px;
+    font-style: italic;
+}
+
+.price-metrics {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.price-metrics h4 {
+    margin: 0 0 15px 0;
+    font-size: 14px;
+    text-transform: uppercase;
+    opacity: 0.9;
+}
+
+.metric-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+    font-size: 14px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 5px;
+}
+
+.revenue-estimate {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.revenue-estimate h4 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    text-transform: uppercase;
+    opacity: 0.9;
+}
+
+.revenue-estimate p {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+    .price-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* ===== END PRICE STRATEGY STYLES ===== */
+
+ /* ===== CONTENT RATING STYLES ===== */
+.content-rating-container {
+    margin: 30px 0;
+    padding: 30px;
+    background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+    border-radius: 15px;
+    color: white;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 20px;
+    align-items: start;
+}
+
+.rating-comparison {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.rating-comparison h4 {
+    margin: 0 0 15px 0;
+    font-size: 14px;
+    text-transform: uppercase;
+    opacity: 0.9;
+}
+
+.rating-item {
+    margin: 10px 0;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 4px solid white;
+    border-radius: 5px;
+}
+
+.rating-item-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 15px;
+}
+
+.rating-item-stats {
+    font-size: 12px;
+    opacity: 0.9;
+    line-height: 1.5;
+}
+
+.rating-insights {
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.target-rating {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+#contentRecommendation {
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* ===== END CONTENT RATING STYLES ===== */
+
+        /* ===== OVERALL SENTIMENT STYLES ===== */
+.overall-sentiment-container {
+    margin: 30px 0;
+    padding: 30px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 15px;
+    color: white;
+}
+
+.overall-sentiment-container h2 {
+    margin: 0 0 25px 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.sentiment-overview {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.sentiment-badge-large {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 25px 35px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.sentiment-emoji {
+    font-size: 48px;
+}
+
+.sentiment-label {
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.sentiment-percentage {
+    font-size: 28px;
+    font-weight: bold;
+    opacity: 0.9;
+}
+
+.sentiment-breakdown {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.sentiment-stat {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    backdrop-filter: blur(5px);
+}
+
+.stat-emoji {
+    font-size: 24px;
+}
+
+.stat-label {
+    font-size: 14px;
+    font-weight: 500;
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.top-reviews-from-sentiment {
+    margin-top: 25px;
+}
+
+.top-reviews-from-sentiment h3 {
+    margin: 0 0 20px 0;
+    font-size: 18px;
+    font-weight: bold;
+    opacity: 0.95;
+}
+
+.dominant-reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.dominant-review-item {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 20px;
+    border-left: 5px solid white;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.dominant-review-text {
+    margin-bottom: 10px;
+    font-style: italic;
+    color: #f5f5f5;
+    font-size: 15px;
+}
+
+.dominant-review-metrics {
+    font-size: 12px;
+    opacity: 0.85;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.dominant-review-metric {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dominant-review-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .sentiment-overview {
+        flex-direction: column;
+    }
+}
+/* ===== END OVERALL SENTIMENT STYLES ===== */
+
+
     </style>
 </head>
 <body>
@@ -483,6 +1066,77 @@
             <div class="insights-container">
                 <!-- Strengths & Weaknesses -->
                 <div class="insight-card">
+
+<!-- SUCCESS SCORE SECTION -->
+<div class="success-score-container">
+    <h2>🎯 Success Score</h2>
+
+    <!-- Circular Progress Indicator (FIXED) -->
+    <div class="score-circle">
+        <svg viewBox="0 0 200 200" class="score-svg">
+            <!-- Background circle (doesn't rotate) -->
+            <circle cx="100" cy="100" r="90" class="score-bg"></circle>
+
+            <!-- Progress circle (rotated separately) -->
+            <g class="score-progress-group">
+                <circle cx="100" cy="100" r="90" class="score-progress"
+                        style="stroke-dashoffset: calc(565 - (565 * var(--score-percent) / 100));">
+                </circle>
+            </g>
+
+            <!-- Text (not rotated) -->
+            <text x="100" y="95" class="score-text" id="scoreValue">--</text>
+            <text x="100" y="120" class="score-label">out of 100</text>
+        </svg>
+    </div>
+
+    <!-- Insights Box -->
+    <div class="insights-box" id="insightsBox">
+        <div class="tier-badge" id="tierBadge">--</div>
+        <p class="description" id="description">--</p>
+        <p class="recommendation" id="recommendation">--</p>
+    </div>
+</div>
+    <!-- END OF SUCCESS SCORE SECTION -->
+
+                    <!-- Overall Sentiment Section -->
+<div id="overallSentimentSection" class="overall-sentiment-container" style="display:none;">
+    <h2>📊 Overall User Sentiment</h2>
+
+    <div class="sentiment-overview">
+        <div class="sentiment-badge-large" id="overallSentimentBadge">
+            <span class="sentiment-emoji" id="sentimentEmoji">😊</span>
+            <span class="sentiment-label" id="sentimentLabel">Positive</span>
+            <span class="sentiment-percentage" id="sentimentPercentage">75%</span>
+        </div>
+
+        <div class="sentiment-breakdown">
+            <div class="sentiment-stat">
+                <span class="stat-emoji">😊</span>
+                <span class="stat-label">Positive:</span>
+                <span class="stat-value" id="positiveCount">0</span>
+            </div>
+            <div class="sentiment-stat">
+                <span class="stat-emoji">😐</span>
+                <span class="stat-label">Neutral:</span>
+                <span class="stat-value" id="neutralCount">0</span>
+            </div>
+            <div class="sentiment-stat">
+                <span class="stat-emoji">😞</span>
+                <span class="stat-label">Negative:</span>
+                <span class="stat-value" id="negativeCount">0</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="top-reviews-from-sentiment">
+        <h3 id="topReviewsTitle">Top 5 Reviews from Dominant Sentiment</h3>
+        <div id="dominantReviewsList" class="dominant-reviews-list"></div>
+    </div>
+</div>
+                    <!-- End of Overall Sentiment Section -->
+
+
                     <div class="insight-title">✅ Strengths</div>
                     <div id="strengthsList"></div>
                 </div>
@@ -515,6 +1169,79 @@
                     <tbody id="similarAppsTable"></tbody>
                 </table>
             </div>
+
+             <!-- ===== INSERT POSITIONING SECTION HERE ===== -->
+
+    <!-- Add this section to display positioning analysis -->
+    <div id="positioningSection" class="positioning-container" style="display:none;">
+        <h2>🎯 Competitive Positioning</h2>
+
+        <div class="positioning-grid">
+            <div class="chart-container">
+                <img id="positioningChart" src="" alt="Positioning Matrix" />
+            </div>
+
+            <div class="positioning-insights">
+                <div class="position-badge" id="positionBadge">--</div>
+                <p class="position-description" id="positionDescription">--</p>
+                <p class="position-recommendation" id="positionRecommendation">--</p>
+
+                <div class="quadrant-summary">
+                    <h4>Market Distribution</h4>
+                    <div id="quadrantStats">--</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== END POSITIONING SECTION ===== -->
+
+            <!-- Price Strategy Analysis Section -->
+<div id="priceStrategySection" class="price-strategy-container" style="display:none;">
+    <h2>💰 Price Strategy Analysis</h2>
+
+    <div class="price-grid">
+        <div class="chart-container">
+            <img id="priceChart" src="" alt="Price Strategy Chart" />
+        </div>
+
+        <div class="price-insights">
+            <div class="price-status" id="priceStatus">--</div>
+            <p class="price-description" id="priceDescription">--</p>
+            <p class="price-recommendation" id="priceRecommendation">--</p>
+
+            <div class="price-metrics">
+                <h4>Pricing Breakdown</h4>
+                <div id="priceMetrics">--</div>
+            </div>
+
+            <div class="revenue-estimate">
+                <h4>Revenue Potential</h4>
+                <p id="revenueEstimate">--</p>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- END OF Price Strategy Analysis Section -->
+
+            <!-- Content Rating Impact Section -->
+<div id="contentRatingSection" class="content-rating-container" style="display:none;">
+    <h2>👥 Content Rating Impact</h2>
+
+    <div class="content-grid">
+        <div class="rating-comparison">
+            <h4>Ratings Distribution</h4>
+            <div id="ratingsList"></div>
+        </div>
+
+        <div class="rating-insights">
+            <div class="target-rating" id="targetRating">--</div>
+            <p id="contentRecommendation">--</p>
+        </div>
+    </div>
+</div>
+            <!-- END OF Content Rating Impact Section -->
+
             
             <!-- Chart -->
             <div class="chart-container">
@@ -612,6 +1339,11 @@
             })
             .then(data => {
                 displayResults(data);
+                displaySuccessScore(data);
+                displayPositioningAnalysis(data);
+                displayPriceStrategy(data);
+                displayContentRatingAnalysis(data);
+                displayOverallSentiment(data);
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('analyzeBtn').disabled = false;
             })
@@ -806,6 +1538,222 @@
             }
             return num.toLocaleString();
         }
+
+        // ===== SUCCESS SCORE DISPLAY FUNCTION =====
+    function displaySuccessScore(data) {
+        const successScore = data.success_score;
+        const insights = data.success_insights;
+
+        // Update score circle
+        const scorePercent = (successScore / 100) * 100;
+        const scoreValue = document.getElementById('scoreValue');
+        scoreValue.textContent = Math.round(successScore);
+
+        // Set CSS variable for animation
+        document.documentElement.style.setProperty('--score-percent', scorePercent);
+
+        // Update insights
+        document.getElementById('tierBadge').textContent = insights.tier;
+        document.getElementById('description').textContent = insights.description;
+        document.getElementById('recommendation').textContent =
+            "💡 " + insights.recommendation;
+
+        // Add color class based on score
+        const insightsBox = document.getElementById('insightsBox');
+        insightsBox.className = 'insights-box score-' +
+            (successScore >= 90 ? 'excellent' :
+             successScore >= 80 ? 'strong' :
+             successScore >= 55 ? 'good' :
+             successScore >= 40 ? 'moderate' : 'poor');
+    }
+    // ===== END SUCCESS SCORE FUNCTION =====
+
+        // ===== COMPETITIVE POSITIONING DISPLAY FUNCTION =====
+function displayPositioningAnalysis(data) {
+    const positioning = data.positioning_data;
+    const positioningChart = data.positioning_chart;
+
+    // Show positioning section
+    document.getElementById('positioningSection').style.display = 'block';
+
+    // Update chart
+    document.getElementById('positioningChart').src = 'data:image/png;base64,' + positioningChart;
+
+    // Update insights
+    const positionEmoji = {
+        'Leader': '👑',
+        'Star': '⭐',
+        'Potential': '📈',
+        'Niche': '🎯'
+    };
+
+    const targetPosition = positioning.target.position;
+    document.getElementById('positionBadge').textContent =
+        positionEmoji[targetPosition] + ' ' + targetPosition;
+    document.getElementById('positionDescription').textContent =
+        positioning.target.name + ' is positioned as a ' + targetPosition;
+    document.getElementById('positionRecommendation').textContent =
+        positioning.recommendation;
+
+    // Update quadrant stats
+    const summary = positioning.quadrant_summary;
+    document.getElementById('quadrantStats').innerHTML = `
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px;">
+            <div>👑 Leaders: ${summary.Leaders}</div>
+            <div>⭐ Stars: ${summary.Stars}</div>
+            <div>📈 Potential: ${summary.Potential}</div>
+            <div>🎯 Niche: ${summary.Niche}</div>
+        </div>
+    `;
+}
+// ===== END POSITIONING FUNCTION =====
+
+        // ===== PRICE STRATEGY DISPLAY FUNCTION =====
+function displayPriceStrategy(data) {
+    const priceStrategy = data.price_strategy;
+    const priceChart = data.price_chart;
+
+    // Show section
+    document.getElementById('priceStrategySection').style.display = 'block';
+
+    // Update chart
+    document.getElementById('priceChart').src = 'data:image/png;base64,' + priceChart;
+
+    // Update status
+    const isFree = priceStrategy.target.is_free;
+    const statusText = isFree ? '💚 Free Application' : '💎 Paid Application';
+    document.getElementById('priceStatus').textContent = statusText;
+
+    // Update description
+    const freeCount = priceStrategy.free_apps.count;
+    const paidCount = priceStrategy.paid_apps.count;
+    const freePercent = priceStrategy.free_apps.percentage.toFixed(1);
+    const paidPercent = priceStrategy.paid_apps.percentage.toFixed(1);
+
+    document.getElementById('priceDescription').textContent =
+        `${freeCount} free (${freePercent}%) vs ${paidCount} paid (${paidPercent}%) apps in your category`;
+
+    // Update recommendation
+    document.getElementById('priceRecommendation').textContent =
+        '💡 ' + priceStrategy.recommendation;
+
+    // Update metrics
+    let metricsHTML = `
+        <div class="metric-item">
+            <span>Free Apps:</span>
+            <strong>Avg Rating: ${priceStrategy.free_apps.avg_rating.toFixed(2)} | Installs: ${(priceStrategy.free_apps.avg_installs / 1000000).toFixed(1)}M</strong>
+        </div>
+        <div class="metric-item">
+            <span>Paid Apps:</span>
+            <strong>Avg Rating: ${priceStrategy.paid_apps.avg_rating.toFixed(2)} | Installs: ${(priceStrategy.paid_apps.avg_installs / 1000000).toFixed(1)}M</strong>
+        </div>
+    `;
+    document.getElementById('priceMetrics').innerHTML = metricsHTML;
+
+    // Update revenue estimate
+    if (priceStrategy.revenue_estimate) {
+        document.getElementById('revenueEstimate').textContent =
+            priceStrategy.revenue_estimate;
+    }
+}
+// ===== END PRICE STRATEGY FUNCTION =====
+
+        // ===== CONTENT RATING DISPLAY FUNCTION =====
+function displayContentRatingAnalysis(data) {
+    const contentAnalysis = data.content_analysis;
+
+    // Show section
+    document.getElementById('contentRatingSection').style.display = 'block';
+
+    // Display target rating
+    document.getElementById('targetRating').textContent =
+        'Application Rating: ' + contentAnalysis.target_rating;
+
+    // Display recommendation
+    document.getElementById('contentRecommendation').textContent =
+        '💡 ' + contentAnalysis.recommendation;
+
+    // Display all ratings
+    let ratingsHTML = '';
+    for (const [rating, stats] of Object.entries(contentAnalysis.ratings)) {
+        ratingsHTML += `
+            <div class="rating-item">
+                <div class="rating-item-title">${rating}</div>
+                <div class="rating-item-stats">
+                    <strong>${stats.count}</strong> apps (${stats.percentage.toFixed(1)}%)<br>
+                    Rating: <strong>${stats.avg_app_rating.toFixed(2)}</strong> |
+                    Installs: <strong>${(stats.avg_installs / 1000000).toFixed(1)}M</strong>
+                </div>
+            </div>
+        `;
+    }
+    document.getElementById('ratingsList').innerHTML = ratingsHTML;
+}
+// ===== END CONTENT RATING FUNCTION =====
+
+        // ===== DISPLAY OVERALL SENTIMENT FUNCTION =====
+function displayOverallSentiment(data) {
+    const sentimentData = data.overall_sentiment_data || {};
+    const overallSentiment = sentimentData.overall_sentiment || 'Unknown';
+    const counts = sentimentData.sentiment_counts || {Positive: 0, Neutral: 0, Negative: 0};
+    const percentage = sentimentData.dominant_percentage || 0;
+    const topReviews = sentimentData.top_reviews || [];
+
+    // Show section
+    document.getElementById('overallSentimentSection').style.display = 'block';
+
+    // Set emoji and colors based on overall sentiment
+    let emoji = '😊';
+    let label = overallSentiment;
+    if (overallSentiment === 'Negative') {
+        emoji = '😞';
+    } else if (overallSentiment === 'Neutral') {
+        emoji = '😐';
+    }
+
+    // Update overall sentiment badge
+    document.getElementById('sentimentEmoji').textContent = emoji;
+    document.getElementById('sentimentLabel').textContent = label;
+    document.getElementById('sentimentPercentage').textContent = percentage + '%';
+
+    // Update sentiment counts
+    document.getElementById('positiveCount').textContent = counts.Positive || 0;
+    document.getElementById('neutralCount').textContent = counts.Neutral || 0;
+    document.getElementById('negativeCount').textContent = counts.Negative || 0;
+
+    // Update title
+    document.getElementById('topReviewsTitle').textContent =
+        `Top 5 ${overallSentiment} Reviews (Highest Polarity)`;
+
+    // Display top reviews from dominant sentiment
+    let reviewsHTML = '';
+    if (topReviews.length === 0) {
+        reviewsHTML = '<p style="opacity: 0.8;">No reviews available for this sentiment category.</p>';
+    } else {
+        topReviews.forEach((review, index) => {
+            reviewsHTML += `
+                <div class="dominant-review-item">
+                    <div class="dominant-review-text">
+                        <strong>#${index + 1}:</strong> "${review.review}"
+                    </div>
+                    <div class="dominant-review-metrics">
+                        <div class="dominant-review-metric">
+                            📊 Polarity: <strong>${review.polarity}</strong>
+                        </div>
+                        <div class="dominant-review-metric">
+                            💭 Subjectivity: <strong>${review.subjectivity}</strong>
+                        </div>
+                        <div class="dominant-review-badge">${review.sentiment}</div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+    document.getElementById('dominantReviewsList').innerHTML = reviewsHTML;
+}
+// ===== END OVERALL SENTIMENT FUNCTION =====
+
+
     </script>
 </body>
 </html>
